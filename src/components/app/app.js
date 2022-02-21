@@ -1,3 +1,5 @@
+import { Component } from 'react';
+
 import AppFilter from '../app-filter/app-filter';
 import AppInfo from '../app-info/app-info';
 import EmployeesList from '../employees-list/employees-list';
@@ -6,26 +8,138 @@ import EmployeesAddForm from '../employees-add-form/employees-add-form'
 
 import './app.css';
 
-function App() {
+class App extends Component {
+  constructor(props) {
+    super(props);
 
-  const data = [
-    {name: 'John', salary: 800, id: 1},
-    {name: 'Denys', salary: 2000, id: 2},
-    {name: 'Fill', salary: 3000, id: 3},
-  ]
+    this.state = {
+      data: [
+        { name: 'John', salary: 800, increase: false, rise: true, id: 1 },
+        { name: 'Denys', salary: 2000, increase: true, rise: false, id: 2 },
+        { name: 'Fill', salary: 3000, increase: false, rise: false, id: 3 },
+      ], 
+      term: '',
+      btn: ''
+    }
+    this.maxId = 4
+  }
 
-  return (
-    <div className="app">
-        <AppInfo />
-    <div className="search-panel">
-      <SearchPanel />
-      <AppFilter />
-    </div>
-    <EmployeesList data={data} />
-    <EmployeesAddForm/>
+  deleteItem = (id) => {
+    this.setState(({ data }) => {
+      return {
+        data: data.filter(item => item.id !== id) // залишаємо в масиві ті, по яких не клікнули 
+      }
+    })
+  }
 
-    </div>
-  );
+  addEmployer = (name, salary) => {
+    const newEmployer = {
+      name: name,
+      salary: +salary,
+      increase: false,
+      rise: false,
+      id: this.maxId++
+    }
+    this.setState(({ data }) => {
+      const newArr = [...data, newEmployer];
+      return {
+        data: newArr
+      }
+    });
+  }
+
+  onToggleIncrease = (id) => {
+    this.setState(({data}) => {
+      const index = data.findIndex( item => item.id === id); // індекс елемента, по якому клік 
+
+      const old = data[index]; // стара копія об'єкта, по якому клікнули (не всього масиву, а тільки його)
+      const newItem = {...old, increase: !old.increase} // створюємо копію свойст об'єкта, по якому клікнули, при цьому беремо його старе значення increase і міняємо на протилежне
+      const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)]; // а тепер формуємо новий масив (беремо всі елементи до зміненого, змінений і всі після зміненого)
+
+      return {
+        data: newArr
+      }
+    })
+  }
+
+  onToggleRise = (id) => {
+    this.setState(({data}) => {
+      const index = data.findIndex( item => item.id === id); // індекс елемента, по якому клік 
+
+      const old = data[index]; // стара копія об'єкта, по якому клікнули (не всього масиву, а тільки його)
+      const newItem = {...old, rise: !old.rise} // створюємо копію свойст об'єкта, по якому клікнули, при цьому беремо його старе значення increase і міняємо на протилежне
+      const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)]; // а тепер формуємо новий масив (беремо всі елементи до зміненого, змінений і всі після зміненого)
+
+      return {
+        data: newArr
+      }
+    })
+  }
+
+  // пошук по елементах 
+  searchEmp = (items, term) => {
+    if (term.length === 0) { // якщо нічого не введено 
+      return items;
+    }
+
+    return items.filter( item => {
+      return item.name.indexOf(term) > -1 // пошук в item.name строки term
+    })
+
+  }
+  // пошук по елементах 
+  onUpdateSearch = (term) => {
+    this.setState({term: term})
+  }
+
+  // фільтр елементів
+  filterEmployers = (data, btn) => {
+    if (btn === 'all') {
+      return data;
+    }
+    else if (btn === 'rise') {
+      return data.filter(item => {
+        return item.rise == true;
+      })
+    }
+    else if (btn === 'salary') {
+      return data.filter(item => {
+        return item.salary > 1000;
+      })
+    }
+    return data;
+  }
+
+  onUpdateFilter = (btn) => {
+    this.setState({
+      btn: btn
+    })
+  }
+ 
+  render() {
+    const employees = this.state.data.length;
+    const increased = this.state.data.filter ( item => item.increase ).length;
+    const {data, term, btn} = this.state;
+    this.searchEmp(data, term);
+    this.filterEmployers(data, btn);
+    
+    return (
+      <div className="app">
+        <AppInfo employees={employees} increased={increased} />
+        <div className="search-panel">
+          <SearchPanel onUpdateSearch={this.onUpdateSearch}/>
+          <AppFilter onUpdateFilter={this.onUpdateFilter}/>
+        </div>
+        <EmployeesList
+          data={data}
+          onToggleIncrease={this.onToggleIncrease}
+          onToggleRise={this.onToggleRise}
+          onDelete={this.deleteItem} />
+        <EmployeesAddForm
+          onAdd={this.addEmployer} />
+      </div>
+    );
+  }
 }
 
 export default App;
