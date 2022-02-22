@@ -5,17 +5,11 @@ import "./app-filter.css";
 class AppFilter extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            btn: 'all'
-        }
     }
 
     filterEmployers = (e) => {
         const btnAttribute = e.target.getAttribute('filter');
         this.props.onUpdateFilter(btnAttribute);
-        this.state = {
-            btn: btnAttribute
-        }
     }
 
     render() {

@@ -99,7 +99,7 @@ class App extends Component {
     }
     else if (btn === 'rise') {
       return data.filter(item => {
-        return item.rise == true;
+        return item.rise;
       })
     }
     else if (btn === 'salary') {
@@ -109,19 +109,34 @@ class App extends Component {
     }
     return data;
   }
-
+ // фільтр елементів
   onUpdateFilter = (btn) => {
     this.setState({
       btn: btn
     })
   }
+
+  // завдання: при інпуті записувати значення, яке вводиться, в state salary відповідного працівника
+  // Треба при інпуті знаходити id робітника, якому треба буде поміняти зарплату 
+  //  
+
+
+  onChangeSalary = (salaryE) => {
+    
+    this.setState(({ data }) => {
+      // const =  // знайти елемент, по якому клікнули filter через id, а нижче ні 
+      return {
+        data: data.filter(item => item.salary = salaryE) 
+      }
+    })
+  }
+
  
   render() {
     const employees = this.state.data.length;
     const increased = this.state.data.filter ( item => item.increase ).length;
     const {data, term, btn} = this.state;
-    this.searchEmp(data, term);
-    this.filterEmployers(data, btn);
+    const visibleData = this.filterEmployers(this.searchEmp(data, term), btn);
     
     return (
       <div className="app">
@@ -131,10 +146,12 @@ class App extends Component {
           <AppFilter onUpdateFilter={this.onUpdateFilter}/>
         </div>
         <EmployeesList
-          data={data}
+          data={visibleData}
           onToggleIncrease={this.onToggleIncrease}
           onToggleRise={this.onToggleRise}
-          onDelete={this.deleteItem} />
+          onDelete={this.deleteItem} 
+          onChangeSalary={this.onChangeSalary}
+          />
         <EmployeesAddForm
           onAdd={this.addEmployer} />
       </div>
