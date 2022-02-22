@@ -1,6 +1,8 @@
 import { Component } from 'react';
 import './employees-add-form.css';
 
+//  якщо ми працюємо із state, то маємо використовувати класи
+
 class EmployeesAddForm extends Component {
     constructor(props) {
         super(props);

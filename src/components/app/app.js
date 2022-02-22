@@ -22,6 +22,7 @@ class App extends Component {
       btn: ''
     }
     this.maxId = 4
+    this.newSel = ''
   }
 
   deleteItem = (id) => {
@@ -118,19 +119,23 @@ class App extends Component {
 
   // завдання: при інпуті записувати значення, яке вводиться, в state salary відповідного працівника
   // Треба при інпуті знаходити id робітника, якому треба буде поміняти зарплату 
-  //  
+  //  І значення самої зарплати 
+  // далі змінюємо зарплату в state і тоді треба створити новий об'єкт по правилах і повернути його
 
-
-  onChangeSalary = (salaryE) => {
-    
-    this.setState(({ data }) => {
-      // const =  // знайти елемент, по якому клікнули filter через id, а нижче ні 
-      return {
-        data: data.filter(item => item.salary = salaryE) 
-      }
-    })
+  onChangeSalary = (id) => {
+    console.log(id)
+    // this.setState(({ data }) => {
+    //   // const =  // знайти елемент, по якому клікнули filter через id, а нижче ні 
+    //   return {
+    //     data: data.filter(item => item.salary = salaryE) 
+    //   }
+    // })
   }
 
+  getSalary = (newSalary) => {
+    this.newSel = newSalary;
+    console.log(this.newSel)
+  }
  
   render() {
     const employees = this.state.data.length;
@@ -140,20 +145,27 @@ class App extends Component {
     
     return (
       <div className="app">
+
         <AppInfo employees={employees} increased={increased} />
+
         <div className="search-panel">
           <SearchPanel onUpdateSearch={this.onUpdateSearch}/>
           <AppFilter onUpdateFilter={this.onUpdateFilter}/>
         </div>
+
         <EmployeesList
           data={visibleData}
           onToggleIncrease={this.onToggleIncrease}
           onToggleRise={this.onToggleRise}
           onDelete={this.deleteItem} 
           onChangeSalary={this.onChangeSalary}
+          getSalary={this.getSalary}
+          
           />
+
         <EmployeesAddForm
           onAdd={this.addEmployer} />
+
       </div>
     );
   }

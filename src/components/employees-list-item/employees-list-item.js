@@ -2,7 +2,7 @@ import './employees-list-item.css';
 
 const EmployeesListItem = (props) => {
 
-    const { name, salary, onDelete, onToggleIncrease, onToggleRise, onChangeSalary, increase, rise, getId } = props;
+    const { name, salary, onDelete, onToggleIncrease, onToggleRise, getSalary, increase, rise } = props;
 
     let classNames = 'list-group-item d-flex justify-content-between';
     if (increase) {
@@ -12,9 +12,10 @@ const EmployeesListItem = (props) => {
         classNames += ' like';
     }
 
-    function changeSalary (e) {
-        onChangeSalary(e.target.value)
+    function changeSalary(e) {
+        getSalary(e.target.value);
     }
+
 
     return (
         <li className={classNames}>
