@@ -2,7 +2,7 @@ import './employees-list-item.css';
 
 const EmployeesListItem = (props) => {
 
-    const { name, salary, onDelete, onToggleIncrease, onToggleRise, getSalary, increase, rise } = props;
+    const { name, salary, onDelete, onToggleIncrease, onToggleRise, onChangeSalary, getSalary, increase, rise } = props;
 
     let classNames = 'list-group-item d-flex justify-content-between';
     if (increase) {
@@ -13,7 +13,9 @@ const EmployeesListItem = (props) => {
     }
 
     function changeSalary(e) {
-        getSalary(e.target.value);
+        const newS = e.target.value.replace(/\D/g, '');
+        getSalary(newS);
+        onChangeSalary()
     }
 
 

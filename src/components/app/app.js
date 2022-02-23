@@ -22,7 +22,7 @@ class App extends Component {
       btn: ''
     }
     this.maxId = 4
-    this.newSel = ''
+    this.newSel = 0
   }
 
   deleteItem = (id) => {
@@ -122,19 +122,24 @@ class App extends Component {
   //  І значення самої зарплати 
   // далі змінюємо зарплату в state і тоді треба створити новий об'єкт по правилах і повернути його
 
-  onChangeSalary = (id) => {
-    console.log(id)
-    // this.setState(({ data }) => {
-    //   // const =  // знайти елемент, по якому клікнули filter через id, а нижче ні 
-    //   return {
-    //     data: data.filter(item => item.salary = salaryE) 
-    //   }
-    // })
-  }
-
   getSalary = (newSalary) => {
     this.newSel = newSalary;
+  }
+
+  onChangeSalary = (id) => {
+    console.log(id)
     console.log(this.newSel)
+    this.setState(({ data }) => {
+      const index = data.findIndex( item => item.id === id); // індекс елемента, по якому клік 
+
+      const old = data[index]; // стара копія об'єкта, по якому клікнули (не всього масиву, а тільки його)
+      const newItem = {...old, salary: this.newSel} // створюємо копію свойст об'єкта, по якому клікнули, при цьому беремо його старе значення increase і міняємо на протилежне
+      const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)]; // а тепер формуємо новий масив (беремо всі елементи до зміненого, змінений і всі після зміненого)
+
+      return {
+        data: newArr
+      }
+    })
   }
  
   render() {
